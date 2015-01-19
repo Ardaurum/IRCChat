@@ -1,7 +1,7 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
-#include "Protocol.h"
+#include "protocols/Protocol.h"
 
 #include <vector>
 

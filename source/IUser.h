@@ -2,7 +2,7 @@
 #define IUSER_H
 
 #include "Message.h"
-#include "ErrorProtocol.h"
+#include "protocols/ErrorProtocol.h"
 
 #include <string>
 #include <unistd.h>
@@ -32,10 +32,13 @@ public:
     virtual void sendError(ErrorType err, std::string content) = 0;
     virtual void sendAck() = 0;
 
+    void kill() { exists = false; };
+
     void setName(std::string name) { sName = name; };
     std::string getName() { return sName; };
 
     bool inRoom() { return room != ""; };
+    std::string getRoom() { return room; };
 
     int getSck() { return iSck; };
 };

@@ -1,5 +1,5 @@
 #include "Room.h"
-#include "ListProtocol.h"
+#include "protocols/ListProtocol.h"
 
 #include <algorithm>
 
@@ -15,8 +15,13 @@ void Room::broadcast(Message msg)
 
 void Room::removeUser(IUser *user)
 {
+    removeUser(user->getName());
+}
+
+void Room::removeUser(std::string user)
+{
     sem.lockWriter();
-    mUsers.erase(user->getName());
+    mUsers.erase(user);
     sem.unlockWriter();
 
     sem.lockReader();

@@ -6,7 +6,7 @@
 #include <string>
 
 //Error types
-enum ErrorType { LOGINUSER, CREATEROOM, JOINROOM, WRONGMSG };
+enum ErrorType { LOGINUSER, CREATEROOM, JOINROOM, WRONGMSG, NOTLOGGED, NOROOM };
 
 class ErrorProtocol : public Protocol
 {

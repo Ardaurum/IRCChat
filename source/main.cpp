@@ -94,6 +94,18 @@ int main(int argc, char *argv[])
             printf("Rooms list for room %s:\n", roomName.c_str());
             printf("%s", ircManager.getUsersFromRoom(roomName).c_str());
         }
+        else if (command == "-k")
+        {
+            std::string userName;
+            cin >> userName;
+            ircManager.removeUserFromRoom(userName);
+        }
+        else if (command == "-b")
+        {
+            std::string userName;
+            cin >> userName;
+            ircManager.removeUser(userName);
+        }
         else
         {
             printf("Incorrect command!\n");

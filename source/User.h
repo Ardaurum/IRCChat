@@ -4,9 +4,9 @@
 #include "IUser.h"
 #include "IRCManager.h"
 #include "IRoom.h"
-#include "Protocol.h"
-#include "ListProtocol.h"
-#include "ErrorProtocol.h"
+#include "protocols/Protocol.h"
+#include "protocols/ListProtocol.h"
+#include "protocols/ErrorProtocol.h"
 #include "Message.h"
 
 class User : public IUser

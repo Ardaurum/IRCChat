@@ -16,6 +16,7 @@ public:
 
     void broadcast(Message msg);
     void removeUser(IUser *user);
+    void removeUser(std::string user);
 
     void addUser(IUser *user);
     void sendUserList();

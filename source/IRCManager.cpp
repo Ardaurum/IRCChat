@@ -1,5 +1,5 @@
 #include "IRCManager.h"
-#include "ListProtocol.h"
+#include "protocols/ListProtocol.h"
 
 #include <algorithm>
 #include <arpa/inet.h>
@@ -22,10 +22,11 @@ bool IRCManager::addUser(IUser *user)
     return false;
 }
 
-void IRCManager::removeUserFromRoom(IUser *user, std::string name)
+void IRCManager::removeUserFromRoom(IUser *user)
 {
+    if (!user->inRoom()) return;
     roomSem.lockWriter();
-    std::unordered_map<std::string, IRoom*>::iterator it = mRooms.find(name);
+    std::unordered_map<std::string, IRoom*>::iterator it = mRooms.find(user->getRoom());
 
     if (it != mRooms.end())
     {
@@ -35,21 +36,56 @@ void IRCManager::removeUserFromRoom(IUser *user, std::string name)
         printf("User %s has been removed from room %s.\n",
                user->getName().c_str(), room->getName().c_str());
 
-        if (room->isEmpty())
-            removeRoom(room);
+        roomSem.unlockWriter();
 
-        user->sendAck();
-        sendRoomList(user);
+        if (room->isEmpty())
+        {
+            removeRoom(room);
+            user->sendAck();
+            sendRoomList(user);
+        } else {
+            user->sendAck();
+        }
+    } else {
+        roomSem.unlockWriter();
     }
-    roomSem.unlockWriter();
+}
+
+void IRCManager::removeUserFromRoom(std::string user)
+{
+    userSem.lockReader();
+    std::unordered_map<std::string, IUser*>::iterator it = mUsers.find(user);
+    userSem.unlockReader();
+    if (it != mUsers.end())
+    {
+        removeUserFromRoom(it->second);
+    }
 }
 
 void IRCManager::removeUser(IUser *user)
 {
+    if (user->inRoom())
+        removeUserFromRoom(user);
+
     userSem.lockWriter();
-    mUsers.erase(user->getName());
+    int rs = mUsers.erase(user->getName());
+    if (rs > 0)
+    {
+        user->kill();
+        printf("User %s has been removed (quantity: %d).\n", user->getName().c_str(), rs);
+    }
     userSem.unlockWriter();
-    printf("User %s has been removed.\n", user->getName().c_str());
+}
+
+void IRCManager::removeUser(std::string user)
+{
+    userSem.lockReader();
+    std::unordered_map<std::string, IUser*>::iterator it = mUsers.find(user);
+    userSem.unlockReader();
+    if (it != mUsers.end())
+    {
+        removeUser(it->second);
+    }
 }
 
 std::string IRCManager::createRoom(std::string name)

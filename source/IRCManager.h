@@ -27,8 +27,10 @@ public:
     bool serverClosed() { return bDone; }
 
     bool addUser(IUser *user);
-    void removeUserFromRoom(IUser *user, std::string name);
+    void removeUserFromRoom(IUser *user);
+    void removeUserFromRoom(std::string user);
     void removeUser(IUser *user);
+    void removeUser(std::string user);
 
     void broadcast(Message msg);
     void broadcastInRoom(Message msg, std::string name);

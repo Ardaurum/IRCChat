@@ -1,9 +1,9 @@
 #include "Message.h"
-#include "StandardProtocol.h"
-#include "EnterProtocol.h"
-#include "ListProtocol.h"
-#include "MessageProtocol.h"
-#include "ErrorProtocol.h"
+#include "protocols/StandardProtocol.h"
+#include "protocols/EnterProtocol.h"
+#include "protocols/ListProtocol.h"
+#include "protocols/MessageProtocol.h"
+#include "protocols/ErrorProtocol.h"
 
 #include <string.h>
 #include <algorithm>

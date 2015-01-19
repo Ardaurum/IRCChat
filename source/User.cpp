@@ -1,7 +1,7 @@
 #include "User.h"
-#include "EnterProtocol.h"
-#include "StandardProtocol.h"
-#include "MessageProtocol.h"
+#include "protocols/EnterProtocol.h"
+#include "protocols/StandardProtocol.h"
+#include "protocols/MessageProtocol.h"
 
 #include <string.h>
 #include <sstream>
@@ -69,11 +69,12 @@ void User::run()
 
         if (received == 0)
         {
-            printf("%s\n", msg.getBuffer());
             logoff();
         }
     }
-    logoff();
+
+    if (exists)
+        logoff();
 }
 
 void User::login(Protocol *ptr)
@@ -81,11 +82,20 @@ void User::login(Protocol *ptr)
     EnterProtocol *proto = dynamic_cast<EnterProtocol*>(ptr);
     sName = proto->getName();
     if (!ircManager->addUser(this))
+    {
         sendError(LOGINUSER, "User name already in use!");
+        sName = "";
+    }
 }
 
 void User::createRoom(Protocol *ptr)
 {
+    if (sName == "")
+    {
+        sendError(NOTLOGGED, "User is not logged in!");
+        return;
+    }
+
     EnterProtocol *proto = dynamic_cast<EnterProtocol*>(ptr);
     room = ircManager->createRoom(proto->getName());
     if (room == "")
@@ -96,6 +106,12 @@ void User::createRoom(Protocol *ptr)
 
 void User::joinRoom(Protocol *ptr)
 {
+    if (sName == "")
+    {
+        sendError(NOTLOGGED, "User is not logged in!");
+        return;
+    }
+
     EnterProtocol *proto = dynamic_cast<EnterProtocol*>(ptr);
     room = ircManager->addUserToRoom(this, proto->getName());
     if (room == "")
@@ -112,13 +128,21 @@ void User::leave()
 {
     if (room != "")
     {
-        ircManager->removeUserFromRoom(this, room);
+        ircManager->removeUserFromRoom(this);
         room = "";
     }
 }
 
 void User::broadcast(Protocol *ptr)
 {
+    if (sName == "")
+    {
+        sendError(NOTLOGGED, "User is not logged in!");
+        return;
+    }
+    if (room == "")
+        sendError(NOROOM, "User is not in a room!");
+
     StandardProtocol *proto = dynamic_cast<StandardProtocol*>(ptr);
     MessageProtocol msgProto(MSG, sName, proto->getContent());
     Message msg;
