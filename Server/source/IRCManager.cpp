@@ -58,7 +58,12 @@ void IRCManager::removeUserFromRoom(std::string user)
     userSem.unlockReader();
     if (it != mUsers.end())
     {
-        removeUserFromRoom(it->second);
+        IUser *user = it->second;
+        removeUserFromRoom(user);
+        if (user->isAlive())
+        {
+            sendRoomList(user);
+        }
     }
 }
 

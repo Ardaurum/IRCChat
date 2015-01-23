@@ -41,6 +41,8 @@ public:
     std::string getRoom() { return room; };
 
     int getSck() { return iSck; };
+
+    bool isAlive() { return exists; };
 };
 
 #endif // IUSER_H
