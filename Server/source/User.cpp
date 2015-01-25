@@ -120,7 +120,6 @@ void User::joinRoom(Protocol *ptr)
 
 void User::logoff()
 {
-    leave();
     exists = false;
 }
 

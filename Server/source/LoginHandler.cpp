@@ -86,6 +86,7 @@ void LoginHandler::run()
     for (pthread_t *ptrThread : vThreads)
     {
         pthread_join(*ptrThread, NULL);
+        free(ptrThread);
     }
 
     close(sck);
@@ -113,6 +114,5 @@ void *LoginHandler::startUser(void *user)
     User *us = (User*)user;
     us->run();
     delete us;
-    user = NULL;
     pthread_exit(0);
 }

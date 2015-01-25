@@ -41,10 +41,14 @@ void IRCManager::removeUserFromRoom(IUser *user)
         if (room->isEmpty())
         {
             removeRoom(room);
-            user->sendAck();
-            sendRoomList(user);
+            if (user->isAlive())
+            {
+            	user->sendAck();
+            	sendRoomList(user);
+            }
         } else {
-            user->sendAck();
+        	if (user->isAlive())
+            	user->sendAck();
         }
     } else {
         roomSem.unlockWriter();
