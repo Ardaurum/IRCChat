@@ -38,17 +38,18 @@ void IRCManager::removeUserFromRoom(IUser *user)
 
         roomSem.unlockWriter();
 
+        if (user->isAlive())
+            user->sendAck();
+
         if (room->isEmpty())
         {
             removeRoom(room);
-            if (user->isAlive())
-            {
-            	user->sendAck();
-            	sendRoomList(user);
-            }
         } else {
         	if (user->isAlive())
+        	{
             	user->sendAck();
+            	sendRoomList(user);
+        	}
         }
     } else {
         roomSem.unlockWriter();
@@ -107,6 +108,7 @@ std::string IRCManager::createRoom(std::string name)
         roomSem.unlockWriter();
 
         printf("Created room: %s.\n", name.c_str());
+        sendRoomList();
         return name;
     }
     roomSem.unlockWriter();
