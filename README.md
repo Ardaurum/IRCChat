@@ -1,4 +1,7 @@
 # IRCChat
+## Authors
+* Radosław Paszkowski
+* Andrzej Borowski
 ## Server
 ### Setup
 Run server using ./IRCServer in terminal. 
